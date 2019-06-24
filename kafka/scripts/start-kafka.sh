@@ -7,6 +7,8 @@
 # * LOG_RETENTION_HOURS: the minimum age of a log file in hours to be eligible for deletion (default is 168, for 1 week)
 # * LOG_RETENTION_BYTES: configure the size at which segments are pruned from the log, (default is 1073741824, for 1GB)
 # * NUM_PARTITIONS: configure the default number of log partitions per topic
+# * AUTO_CREATE_TOPICS: whether to autocreate topics
+# * LISTENERS: configure the listener list e.g. "PLAINTEXT://:9092"
 
 # Configure advertised host/port if we run in helios
 if [ ! -z "$HELIOS_PORT_kafka" ]; then
@@ -20,7 +22,7 @@ if [ ! -z "$ADVERTISED_HOST" ]; then
     if grep -q "^advertised.host.name" $KAFKA_HOME/config/server.properties; then
         sed -r -i "s/#(advertised.host.name)=(.*)/\1=$ADVERTISED_HOST/g" $KAFKA_HOME/config/server.properties
     else
-        echo "advertised.host.name=$ADVERTISED_HOST" >> $KAFKA_HOME/config/server.properties
+        echo "\nadvertised.host.name=$ADVERTISED_HOST" >> $KAFKA_HOME/config/server.properties
     fi
 fi
 if [ ! -z "$ADVERTISED_PORT" ]; then
@@ -28,7 +30,7 @@ if [ ! -z "$ADVERTISED_PORT" ]; then
     if grep -q "^advertised.port" $KAFKA_HOME/config/server.properties; then
         sed -r -i "s/#(advertised.port)=(.*)/\1=$ADVERTISED_PORT/g" $KAFKA_HOME/config/server.properties
     else
-        echo "advertised.port=$ADVERTISED_PORT" >> $KAFKA_HOME/config/server.properties
+        echo "\nadvertised.port=$ADVERTISED_PORT" >> $KAFKA_HOME/config/server.properties
     fi
 fi
 
@@ -65,10 +67,20 @@ if [ ! -z "$NUM_PARTITIONS" ]; then
     sed -r -i "s/(num.partitions)=(.*)/\1=$NUM_PARTITIONS/g" $KAFKA_HOME/config/server.properties
 fi
 
+# Set the listener list
+if [ ! -z "$LISTENERS" ]; then
+    echo "listeners : $LISTENERS"
+    if grep -q "^listeners" $KAFKA_HOME/config/server.properties; then
+        sed -r -i "s/#(listeners)=(.*)/\1=$(echo $LISTENERS | sed -e 's/[\/&]/\\&/g')/g" $KAFKA_HOME/config/server.properties
+    else
+        echo "\nlisteners=$LISTENERS" >> $KAFKA_HOME/config/server.properties
+    fi
+fi
+
 # Enable/disable auto creation of topics
 if [ ! -z "$AUTO_CREATE_TOPICS" ]; then
     echo "auto.create.topics.enable: $AUTO_CREATE_TOPICS"
-    echo "auto.create.topics.enable=$AUTO_CREATE_TOPICS" >> $KAFKA_HOME/config/server.properties
+    echo "/nauto.create.topics.enable=$AUTO_CREATE_TOPICS" >> $KAFKA_HOME/config/server.properties
 fi
 
 # Run Kafka

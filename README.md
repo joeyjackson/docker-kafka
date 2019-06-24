@@ -19,17 +19,7 @@ Run
 ---
 
 ```bash
-docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=`docker-machine ip \`docker-machine active\`` --env ADVERTISED_PORT=9092 spotify/kafka
-```
-
-```bash
-export KAFKA=`docker-machine ip \`docker-machine active\``:9092
-kafka-console-producer.sh --broker-list $KAFKA --topic test
-```
-
-```bash
-export ZOOKEEPER=`docker-machine ip \`docker-machine active\``:2181
-kafka-console-consumer.sh --zookeeper $ZOOKEEPER --topic test
+docker run -p 2181:2181 -p 9092:9092 -e AUTO_CREATE_TOPICS=true -e ADVERTISED_HOST=127.0.0.1  -e ADVERTISED_PORT=9092 --rm joeyjackson/kafka
 ```
 
 Running the proxy
@@ -74,8 +64,8 @@ https://registry.hub.docker.com/u/spotify/kafkaproxy/
 Build from Source
 ---
 
-    docker build -t spotify/kafka kafka/
-    docker build -t spotify/kafkaproxy kafkaproxy/
+    docker build -t joeyjackson/kafka kafka/
+    docker build -t joeyjackson/kafkaproxy kafkaproxy/
 
 Todo
 ---

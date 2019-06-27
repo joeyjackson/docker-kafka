@@ -19,7 +19,7 @@ Run
 ---
 
 ```bash
-docker run -p 2181:2181 -p 9092:9092 -e AUTO_CREATE_TOPICS=true -e ADVERTISED_HOST=127.0.0.1  -e ADVERTISED_PORT=9092 --rm joeyjackson/kafka
+docker run -p 2181:2181 -p 9092:9092 -e AUTO_CREATE_TOPICS=true -e ADVERTISED_HOST=localhost -e ADVERTISED_PORT=9092 --rm joeyjackson/kafka
 ```
 
 Running the proxy

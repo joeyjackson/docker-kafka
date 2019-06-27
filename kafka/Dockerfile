@@ -9,8 +9,7 @@ ENV KAFKA_HOME /opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION"
 
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
 RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
-# As suggested by a user, for some people this line works instead of the first one. Use whichever works for your case
-# RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
+
 # Install Kafka, Zookeeper and other needed things
 RUN apt-get -o Acquire::Check-Valid-Until=false update && \
     apt-get -o Acquire::Check-Valid-Until=false install -y zookeeper wget supervisor dnsutils && \
